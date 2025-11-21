@@ -197,26 +197,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const cardFill = isDark ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.9)";
 
     const svg = `
-      <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+      <svg width="${width}" height="${cardHeight + 20}" viewBox="0 0 ${width} ${cardHeight + 20}" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#0f172a"/> <stop offset="100%" stop-color="#1e293b"/> </linearGradient>
-
     <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#38bdf8"/>
       <stop offset="100%" stop-color="#818cf8"/>
     </linearGradient>
 
-    <linearGradient id="cardSurface" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#334155" stop-opacity="0.6"/>
-      <stop offset="100%" stop-color="#1e293b" stop-opacity="0.8"/>
+    <linearGradient id="cardFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e293b" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.95"/>
     </linearGradient>
 
     <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
       <feOffset dx="0" dy="4" result="offsetblur"/>
       <feComponentTransfer>
-        <feFuncA type="linear" slope="0.3"/>
+        <feFuncA type="linear" slope="0.4"/>
       </feComponentTransfer>
       <feMerge>
         <feMergeNode/>
@@ -225,75 +222,40 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     </filter>
 
     <style>
-      /* Modernized Font Stack */
-      .font-base { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-
-      /* Dark Mode Text Colors */
-      .title { font-weight: 700; font-size: 15px; fill: #f1f5f9; }
-      .muted { font-weight: 400; font-size: 12px; fill: #94a3b8; }
-      .label { font-weight: 600; font-size: 12px; fill: #cbd5e1; letter-spacing: 0.5px; text-transform: uppercase; }
-
-      /* Stat styles - using accent gradient */
-      .stat-big { font-weight: 800; font-size: 32px; fill: url(#accentGrad); }
-      .stat-unit { font-weight: 600; font-size: 13px; fill: #cbd5e1; }
+      .font-base { font-family: 'Segoe UI', Ubuntu, 'Helvetica Neue', sans-serif; }
+      .label { font-weight: 600; font-size: 11px; fill: #94a3b8; letter-spacing: 0.6px; text-transform: uppercase; }
+      .stat-big { font-weight: 800; font-size: 28px; fill: url(#accentGrad); }
+      .stat-unit { font-weight: 500; font-size: 12px; fill: #cbd5e1; opacity: 0.8; }
     </style>
   </defs>
 
-  <rect width="100%" height="100%" fill="url(#bgGrad)" rx="12" />
+  <g transform="translate(${padding}, 5)" class="font-base">
 
-  <g transform="translate(${padding}, ${padding})" class="font-base">
-
-    <g transform="translate(10, 5)">
-      <circle cx="20" cy="20" r="22" fill="url(#accentGrad)" opacity="0.3"/>
-      <image href="${esc(UPLOADED_IMAGE_PATH)}" x="0" y="0" width="40" height="40" clip-path="circle(20px at 20px 20px)" />
-
-      <text class="title" x="56" y="16">GitHub Contributions — ${esc(user)}</text>
-      <text class="muted" x="56" y="34">Live metrics updated from GitHub</text>
+    <g transform="translate(0,0)" filter="url(#shadow)">
+      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardFill)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+      <g transform="translate(20, 24)">
+        <text class="label">Most Productive</text>
+        <text class="stat-big" x="0" y="42">${mostProductive.count}</text>
+        <text class="stat-unit" x="0" y="62">on ${mostProductive.date}</text>
+      </g>
     </g>
 
-
-    <g transform="translate(0, 70)">
-
-      <g transform="translate(0,0)" filter="url(#shadow)">
-        <rect width="${cardWidth}" height="${cardHeight}" rx="16" fill="url(#cardSurface)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-
-        <g transform="translate(20, 25)">
-          <text class="label">Current Streak</text>
-          <text class="stat-big" x="0" y="45">${currentStreak}</text>
-          <text class="stat-unit" x="0" y="68">consecutive days</text>
-        </g>
+    <g transform="translate(${cardWidth + cardGap},0)" filter="url(#shadow)">
+      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardFill)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+      <g transform="translate(20, 24)">
+        <text class="label">Current Streak</text>
+        <text class="stat-big" x="0" y="42">${currentStreak}</text>
+        <text class="stat-unit" x="0" y="62">consecutive days</text>
       </g>
-
-      <g transform="translate(${cardWidth + cardGap},0)" filter="url(#shadow)">
-        <rect width="${cardWidth}" height="${cardHeight}" rx="16" fill="url(#cardSurface)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-
-        <g transform="translate(20, 25)">
-          <text class="label">Most Productive</text>
-          <text class="stat-big" x="0" y="45">${mostProductive.count}</text>
-          <text class="stat-unit" x="0" y="68">on ${mostProductive.date}</text>
-        </g>
-      </g>
-
-      <g transform="translate(${2 * (cardWidth + cardGap)},0)" filter="url(#shadow)">
-        <rect width="${cardWidth}" height="${cardHeight}" rx="16" fill="url(#cardSurface)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-
-        <g transform="translate(20, 25)">
-          <text class="label">Weekly Avg (YTD)</text>
-          <text class="stat-big" x="0" y="45">${avgWeekly}</text>
-          <text class="stat-unit" x="0" y="68">contributions / wk</text>
-        </g>
-      </g>
-
     </g>
 
-    <g transform="translate(10, ${70 + cardHeight + 25})">
-        <text class="muted">
-            Year Max Streak: <tspan fill="#f1f5f9" font-weight="600">${maxYearStreak}</tspan>
-            <tspan dx="15" opacity="0.5">•</tspan>
-            <tspan dx="15">Total: <tspan fill="#f1f5f9" font-weight="600">${total}</tspan></tspan>
-            <tspan dx="15" opacity="0.5">•</tspan>
-            <tspan dx="15">Best Month: <tspan fill="#f1f5f9" font-weight="600">${esc(calculateHighestCommittedMonth(rawData).label)} (${calculateHighestCommittedMonth(rawData).count})</tspan></tspan>
-        </text>
+    <g transform="translate(${2 * (cardWidth + cardGap)},0)" filter="url(#shadow)">
+      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardFill)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+      <g transform="translate(20, 24)">
+        <text class="label">Weekly Avg (YTD)</text>
+        <text class="stat-big" x="0" y="42">${avgWeekly}</text>
+        <text class="stat-unit" x="0" y="62">contributions / wk</text>
+      </g>
     </g>
 
   </g>
