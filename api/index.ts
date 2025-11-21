@@ -210,29 +210,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     </linearGradient>
 
     <linearGradient id="cardBg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1e293b" stop-opacity="0.8"/>
-      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+      <stop offset="0%" stop-color="#0a0a0a" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.95"/>
     </linearGradient>
 
     <linearGradient id="topSheen" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="rgba(255,255,255,0.05)"/>
-      <stop offset="50%" stop-color="rgba(255,255,255,0.3)"/>
+      <stop offset="50%" stop-color="rgba(255,255,255,0.2)"/>
       <stop offset="100%" stop-color="rgba(255,255,255,0.05)"/>
     </linearGradient>
 
     <style>
       .font-base { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-      .label { font-weight: 700; font-size: 10px; fill: #94a3b8; letter-spacing: 1.2px; text-transform: uppercase; }
+      .label { font-weight: 700; font-size: 10px; fill: #525252; letter-spacing: 1.2px; text-transform: uppercase; }
       .stat-value { font-weight: 800; font-size: 32px; fill: #f8fafc; }
-      .stat-unit { font-weight: 500; font-size: 12px; fill: #64748b; margin-top: 2px;}
-      .icon-bg { fill: #334155; opacity: 0.15; }
+      .stat-unit { font-weight: 500; font-size: 12px; fill: #525252; margin-top: 2px;}
+      .icon-bg { fill: #262626; opacity: 0.2; }
     </style>
   </defs>
 
   <g transform="translate(${padding}, 5)" class="font-base">
 
     <g transform="translate(0,0)">
-      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardBg)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardBg)" stroke="#262626" stroke-width="1"/>
       <path d="M1 ${cardHeight} L1 12 Q1 1 12 1 L${cardWidth - 12} 1 Q${cardWidth - 1} 1 ${cardWidth - 1} 12 L${cardWidth - 1} ${cardHeight}" stroke="url(#topSheen)" stroke-width="1.5" fill="none" opacity="0.6"/>
       
       <g transform="translate(20, 24)">
@@ -245,11 +245,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     </g>
 
     <g transform="translate(${cardWidth + cardGap},0)">
-      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardBg)" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1"/>
+      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardBg)" stroke="#333333" stroke-width="1"/>
       <path d="M1 ${cardHeight} L1 12 Q1 1 12 1 L${cardWidth - 12} 1 Q${cardWidth - 1} 1 ${cardWidth - 1} 12 L${cardWidth - 1} ${cardHeight}" stroke="url(#topSheen)" stroke-width="1.5" fill="none"/>
 
       <g transform="translate(20, 24)">
-        <text class="label" style="fill: #38bdf8;">Current Streak</text> <text class="stat-value" x="0" y="42" style="fill: url(#fireGrad); filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.3));">${currentStreak}</text>
+        <text class="label" style="fill: #9ca3af;">Current Streak</text>
+        <text class="stat-value" x="0" y="42" style="fill: url(#fireGrad); filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.2));">${currentStreak}</text>
         <text class="stat-unit" x="0" y="62">days in a row</text>
       </g>
 
@@ -257,7 +258,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     </g>
 
     <g transform="translate(${2 * (cardWidth + cardGap)},0)">
-      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardBg)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardBg)" stroke="#262626" stroke-width="1"/>
       <path d="M1 ${cardHeight} L1 12 Q1 1 12 1 L${cardWidth - 12} 1 Q${cardWidth - 1} 1 ${cardWidth - 1} 12 L${cardWidth - 1} ${cardHeight}" stroke="url(#topSheen)" stroke-width="1.5" fill="none" opacity="0.6"/>
 
       <g transform="translate(20, 24)">
