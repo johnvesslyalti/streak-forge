@@ -118,7 +118,7 @@ function calculateAverageWeeklyCurrentYear(data: GitHubData): number {
   const weeks = Math.max(1, Math.ceil(yearDays.length / 7));
   const avgPerWeek = sum / weeks;
   // round to one decimal
-  return Math.round(avgPerWeek * 10) / 10;
+  return Math.round(avgPerWeek);
 }
 
 function calculateMaxYearStreak(data: GitHubData): number {
