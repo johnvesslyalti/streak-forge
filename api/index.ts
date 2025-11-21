@@ -198,73 +198,106 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const svg = `
       <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="${bgStart}"/>
-            <stop offset="100%" stop-color="${bgEnd}"/>
-          </linearGradient>
-          <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stop-color="${accent}" stop-opacity="0.95"/>
-            <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.9"/>
-          </linearGradient>
-          <style>
-            .title { font: 600 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: ${isDark ? "#e6f7ff" : "#0b1220"}; }
-            .muted { font: 400 11px 'Segoe UI', Ubuntu, Sans-Serif; fill: ${isDark ? "#b3cde6" : "#6b7280"}; }
-            .stat-big { font: 700 26px 'Segoe UI', Ubuntu, Sans-Serif; fill: ${isDark ? "#fff" : "#0b1220"}; }
-            .stat-small { font: 700 16px 'Segoe UI', Ubuntu, Sans-Serif; fill: ${isDark ? "#e6f7ff" : "#0b1220"}; }
-            .label { font: 600 11px 'Segoe UI', Ubuntu, Sans-Serif; fill: ${isDark ? "#d7f3ff" : "#0b1220"}; }
-          </style>
-        </defs>
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/> <stop offset="100%" stop-color="#1e293b"/> </linearGradient>
 
-        <rect width="100%" height="100%" fill="url(#bgGrad)" />
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
 
-        <!-- Card container -->
-        <g transform="translate(${padding}, ${padding})">
+    <linearGradient id="cardSurface" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#334155" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#1e293b" stop-opacity="0.8"/>
+    </linearGradient>
 
-          <!-- Optional avatar on the left of the header -->
-          <g transform="translate(0,0)">
-            <image href="${esc(UPLOADED_IMAGE_PATH)}" x="0" y="0" width="40" height="40" clip-path="circle(20px at 20px 20px)" />
-            <text class="title" x="52" y="18">GitHub Contributions — ${esc(user)}</text>
-            <text class="muted" x="52" y="36">Updated live from GitHub</text>
-          </g>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
 
-          <!-- Three equal cards in a row -->
-          <g transform="translate(0,56)">
+    <style>
+      /* Modernized Font Stack */
+      .font-base { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 
-            <!-- Card 1: Current Streak -->
-            <g transform="translate(0,0)">
-              <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="${cardFill}" stroke="rgba(0,0,0,0.04)" />
-              <text class="label" x="16" y="28">Current Streak</text>
-              <text class="stat-big" x="16" y="74">${currentStreak} <tspan class="muted" font-size="12">days</tspan></text>
-            </g>
+      /* Dark Mode Text Colors */
+      .title { font-weight: 700; font-size: 15px; fill: #f1f5f9; }
+      .muted { font-weight: 400; font-size: 12px; fill: #94a3b8; }
+      .label { font-weight: 600; font-size: 12px; fill: #cbd5e1; letter-spacing: 0.5px; text-transform: uppercase; }
 
-            <!-- Card 2: Most Productive Day -->
-            <g transform="translate(${cardWidth + cardGap},0)">
-              <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="${cardFill}" stroke="rgba(0,0,0,0.04)" />
-              <text class="label" x="16" y="28">Most Productive Day</text>
-              <text class="stat-big" x="16" y="60">${mostProductive.count}</text>
-              <text class="muted" x="16" y="82">on ${mostProductive.date}</text>
-            </g>
+      /* Stat styles - using accent gradient */
+      .stat-big { font-weight: 800; font-size: 32px; fill: url(#accentGrad); }
+      .stat-unit { font-weight: 600; font-size: 13px; fill: #cbd5e1; }
+    </style>
+  </defs>
 
-            <!-- Card 3: Average Weekly Contributions (current year) -->
-            <g transform="translate(${2 * (cardWidth + cardGap)},0)">
-              <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="${cardFill}" stroke="rgba(0,0,0,0.04)" />
-              <text class="label" x="16" y="28">Avg Weekly (this year)</text>
-              <text class="stat-big" x="16" y="74">${avgWeekly} <tspan class="muted" font-size="12">contribs / wk</tspan></text>
-            </g>
+  <rect width="100%" height="100%" fill="url(#bgGrad)" rx="12" />
 
-          </g>
+  <g transform="translate(${padding}, ${padding})" class="font-base">
 
-          <!-- Footer small stats on the right bottom -->
-          <g transform="translate(0, ${56 + cardHeight + 12})">
-            <text class="muted">Max Streak This Year: ${maxYearStreak} days</text>
-            <text class="muted" x="260">Total Contributions: ${total}</text>
-            <text class="muted" x="460">Highest Month: ${esc(calculateHighestCommittedMonth(rawData).label)} (${calculateHighestCommittedMonth(rawData).count})</text>
-          </g>
+    <g transform="translate(10, 5)">
+      <circle cx="20" cy="20" r="22" fill="url(#accentGrad)" opacity="0.3"/>
+      <image href="${esc(UPLOADED_IMAGE_PATH)}" x="0" y="0" width="40" height="40" clip-path="circle(20px at 20px 20px)" />
 
+      <text class="title" x="56" y="16">GitHub Contributions — ${esc(user)}</text>
+      <text class="muted" x="56" y="34">Live metrics updated from GitHub</text>
+    </g>
+
+
+    <g transform="translate(0, 70)">
+
+      <g transform="translate(0,0)" filter="url(#shadow)">
+        <rect width="${cardWidth}" height="${cardHeight}" rx="16" fill="url(#cardSurface)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+        <g transform="translate(20, 25)">
+          <text class="label">Current Streak</text>
+          <text class="stat-big" x="0" y="45">${currentStreak}</text>
+          <text class="stat-unit" x="0" y="68">consecutive days</text>
         </g>
+      </g>
 
-      </svg>
+      <g transform="translate(${cardWidth + cardGap},0)" filter="url(#shadow)">
+        <rect width="${cardWidth}" height="${cardHeight}" rx="16" fill="url(#cardSurface)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+        <g transform="translate(20, 25)">
+          <text class="label">Most Productive</text>
+          <text class="stat-big" x="0" y="45">${mostProductive.count}</text>
+          <text class="stat-unit" x="0" y="68">on ${mostProductive.date}</text>
+        </g>
+      </g>
+
+      <g transform="translate(${2 * (cardWidth + cardGap)},0)" filter="url(#shadow)">
+        <rect width="${cardWidth}" height="${cardHeight}" rx="16" fill="url(#cardSurface)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+        <g transform="translate(20, 25)">
+          <text class="label">Weekly Avg (YTD)</text>
+          <text class="stat-big" x="0" y="45">${avgWeekly}</text>
+          <text class="stat-unit" x="0" y="68">contributions / wk</text>
+        </g>
+      </g>
+
+    </g>
+
+    <g transform="translate(10, ${70 + cardHeight + 25})">
+        <text class="muted">
+            Year Max Streak: <tspan fill="#f1f5f9" font-weight="600">${maxYearStreak}</tspan>
+            <tspan dx="15" opacity="0.5">•</tspan>
+            <tspan dx="15">Total: <tspan fill="#f1f5f9" font-weight="600">${total}</tspan></tspan>
+            <tspan dx="15" opacity="0.5">•</tspan>
+            <tspan dx="15">Best Month: <tspan fill="#f1f5f9" font-weight="600">${esc(calculateHighestCommittedMonth(rawData).label)} (${calculateHighestCommittedMonth(rawData).count})</tspan></tspan>
+        </text>
+    </g>
+
+  </g>
+</svg>
     `;
 
     res.setHeader("Content-Type", "image/svg+xml");
