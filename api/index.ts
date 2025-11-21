@@ -242,7 +242,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       <g transform="translate(20, 24)">
           <text class="label" style="fill: #9ca3af;">Current Streak</text>
-          <text class="stat-value" x="0" y="42" style="fill: #4ade80">${currentStreak}</text>
+          <text class="stat-value" x="0" y="42">${currentStreak}</text>
           <text class="stat-unit" x="0" y="62">days in a row</text>
       </g>
 
