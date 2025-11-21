@@ -249,9 +249,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       <path d="M1 ${cardHeight} L1 12 Q1 1 12 1 L${cardWidth - 12} 1 Q${cardWidth - 1} 1 ${cardWidth - 1} 12 L${cardWidth - 1} ${cardHeight}" stroke="url(#topSheen)" stroke-width="1.5" fill="none"/>
 
       <g transform="translate(20, 24)">
-        <text class="label" style="fill: #9ca3af;">Current Streak</text>
-        <text class="stat-value" x="0" y="42" style="fill: url(#fireGrad); filter: drop-shadow(0 0 8px rgba(34, 245, 11, 1));">${currentStreak}</text>
-        <text class="stat-unit" x="0" y="62">days in a row</text>
+          <text class="label" style="fill: #9ca3af;">Current Streak</text>
+          
+          <text class="stat-value" x="0" y="42" style="fill: #4ade80; filter: drop-shadow(0 0 8px rgba(34, 245, 11, 1));">${currentStreak}</text>
+          
+          <text class="stat-unit" x="0" y="62">days in a row</text>
       </g>
 
       <path class="icon-bg" transform="translate(${cardWidth - 50}, ${cardHeight - 55}) scale(1.2)" d="M19.48,13.03A34.24,34.24,0,0,0,16.36,6c-1.54-2.8-4.2-4.78-4.2-4.78A1,1,0,0,0,11,1.5a.76.76,0,0,0-.19.43,16.88,16.88,0,0,0,0,3.4,8,8,0,0,1-1.92,5.11,6.79,6.79,0,0,1-3.79,2.1,1,1,0,0,0-.71,1.27,10.64,10.64,0,0,0,1.15,3.14,10,10,0,1,0,19-3.48ZM12,20a7,7,0,0,1-7-7,7.77,7.77,0,0,1,.26-2A9.78,9.78,0,0,0,9,12.47a11,11,0,0,0,3.36-7.36,13.56,13.56,0,0,1,1,2.27,31.13,31.13,0,0,1,2.8,6.63A7,7,0,0,1,12,20Z"/>
