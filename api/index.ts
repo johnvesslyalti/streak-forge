@@ -199,63 +199,74 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const svg = `
       <svg width="${width}" height="${cardHeight + 20}" viewBox="0 0 ${width} ${cardHeight + 20}" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#818cf8"/>
+    <linearGradient id="textGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
     </linearGradient>
 
-    <linearGradient id="cardFill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1e293b" stop-opacity="0.9"/>
-      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.95"/>
+    <linearGradient id="fireGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#fcd34d"/>
+      <stop offset="100%" stop-color="#f87171"/>
     </linearGradient>
 
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-      <feOffset dx="0" dy="4" result="offsetblur"/>
-      <feComponentTransfer>
-        <feFuncA type="linear" slope="0.4"/>
-      </feComponentTransfer>
-      <feMerge>
-        <feMergeNode/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
+    <linearGradient id="cardBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e293b" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+    </linearGradient>
+
+    <linearGradient id="topSheen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.05)"/>
+      <stop offset="50%" stop-color="rgba(255,255,255,0.3)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.05)"/>
+    </linearGradient>
 
     <style>
-      .font-base { font-family: 'Segoe UI', Ubuntu, 'Helvetica Neue', sans-serif; }
-      .label { font-weight: 600; font-size: 11px; fill: #94a3b8; letter-spacing: 0.6px; text-transform: uppercase; }
-      .stat-big { font-weight: 800; font-size: 28px; fill: url(#accentGrad); }
-      .stat-unit { font-weight: 500; font-size: 12px; fill: #cbd5e1; opacity: 0.8; }
+      .font-base { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+      .label { font-weight: 700; font-size: 10px; fill: #94a3b8; letter-spacing: 1.2px; text-transform: uppercase; }
+      .stat-value { font-weight: 800; font-size: 32px; fill: #f8fafc; }
+      .stat-unit { font-weight: 500; font-size: 12px; fill: #64748b; margin-top: 2px;}
+      .icon-bg { fill: #334155; opacity: 0.15; }
     </style>
   </defs>
 
   <g transform="translate(${padding}, 5)" class="font-base">
 
-    <g transform="translate(0,0)" filter="url(#shadow)">
-      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardFill)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    <g transform="translate(0,0)">
+      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardBg)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+      <path d="M1 ${cardHeight} L1 12 Q1 1 12 1 L${cardWidth - 12} 1 Q${cardWidth - 1} 1 ${cardWidth - 1} 12 L${cardWidth - 1} ${cardHeight}" stroke="url(#topSheen)" stroke-width="1.5" fill="none" opacity="0.6"/>
+      
       <g transform="translate(20, 24)">
-        <text class="label">Most Productive</text>
-        <text class="stat-big" x="0" y="42">${mostProductive.count}</text>
-        <text class="stat-unit" x="0" y="62">on ${mostProductive.date}</text>
+        <text class="label">Top Day</text>
+        <text class="stat-value" x="0" y="42" fill="url(#textGrad)">${mostProductive.count}</text>
+        <text class="stat-unit" x="0" y="62">${mostProductive.date}</text>
       </g>
+      
+      <path class="icon-bg" transform="translate(${cardWidth - 55}, ${cardHeight - 55}) scale(1.5)" d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zM16.2 13H19v6h-2.8z"/>
     </g>
 
-    <g transform="translate(${cardWidth + cardGap},0)" filter="url(#shadow)">
-      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardFill)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    <g transform="translate(${cardWidth + cardGap},0)">
+      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardBg)" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1"/>
+      <path d="M1 ${cardHeight} L1 12 Q1 1 12 1 L${cardWidth - 12} 1 Q${cardWidth - 1} 1 ${cardWidth - 1} 12 L${cardWidth - 1} ${cardHeight}" stroke="url(#topSheen)" stroke-width="1.5" fill="none"/>
+
       <g transform="translate(20, 24)">
-        <text class="label">Current Streak</text>
-        <text class="stat-big" x="0" y="42">${currentStreak}</text>
-        <text class="stat-unit" x="0" y="62">consecutive days</text>
+        <text class="label" style="fill: #38bdf8;">Current Streak</text> <text class="stat-value" x="0" y="42" style="fill: url(#fireGrad); filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.3));">${currentStreak}</text>
+        <text class="stat-unit" x="0" y="62">days in a row</text>
       </g>
+
+      <path class="icon-bg" transform="translate(${cardWidth - 50}, ${cardHeight - 55}) scale(1.2)" d="M19.48,13.03A34.24,34.24,0,0,0,16.36,6c-1.54-2.8-4.2-4.78-4.2-4.78A1,1,0,0,0,11,1.5a.76.76,0,0,0-.19.43,16.88,16.88,0,0,0,0,3.4,8,8,0,0,1-1.92,5.11,6.79,6.79,0,0,1-3.79,2.1,1,1,0,0,0-.71,1.27,10.64,10.64,0,0,0,1.15,3.14,10,10,0,1,0,19-3.48ZM12,20a7,7,0,0,1-7-7,7.77,7.77,0,0,1,.26-2A9.78,9.78,0,0,0,9,12.47a11,11,0,0,0,3.36-7.36,13.56,13.56,0,0,1,1,2.27,31.13,31.13,0,0,1,2.8,6.63A7,7,0,0,1,12,20Z"/>
     </g>
 
-    <g transform="translate(${2 * (cardWidth + cardGap)},0)" filter="url(#shadow)">
-      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardFill)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    <g transform="translate(${2 * (cardWidth + cardGap)},0)">
+      <rect width="${cardWidth}" height="${cardHeight}" rx="12" fill="url(#cardBg)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+      <path d="M1 ${cardHeight} L1 12 Q1 1 12 1 L${cardWidth - 12} 1 Q${cardWidth - 1} 1 ${cardWidth - 1} 12 L${cardWidth - 1} ${cardHeight}" stroke="url(#topSheen)" stroke-width="1.5" fill="none" opacity="0.6"/>
+
       <g transform="translate(20, 24)">
-        <text class="label">Weekly Avg (YTD)</text>
-        <text class="stat-big" x="0" y="42">${avgWeekly}</text>
-        <text class="stat-unit" x="0" y="62">contributions / wk</text>
+        <text class="label">Weekly Avg</text>
+        <text class="stat-value" x="0" y="42" fill="url(#textGrad)">${avgWeekly}</text>
+        <text class="stat-unit" x="0" y="62">commits / wk</text>
       </g>
+
+      <path class="icon-bg" transform="translate(${cardWidth - 55}, ${cardHeight - 55}) scale(1.5)" d="M16,6l-6,9l-4-5L0,16h3l2-3l4,5l7-10.5V13h3V3h-8V6z"/>
     </g>
 
   </g>
